@@ -1,7 +1,6 @@
 module lextest3;
 
-wire (a,b,c);
+w$ire (a,b,c);
 
-
-end module;
+end module;;;;;
 
