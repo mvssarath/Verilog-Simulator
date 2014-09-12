@@ -1,0 +1,8 @@
+module get_SHA1(sha,out);
+
+input SHA1;
+output out;
+
+sha is h5A827999,h5524322s,abcde01234;
+end;
+
