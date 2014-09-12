@@ -1,0 +1,6 @@
+module mux2_1(i0,i1,sel,out);
+input i0,i1,sel;
+output out;
+wire m_out;
+out_i0 and i1 or sel;
+end module;
