@@ -1,0 +1,7 @@
+module lextest3;
+
+wire (a,b,c);
+
+
+end module;
+
