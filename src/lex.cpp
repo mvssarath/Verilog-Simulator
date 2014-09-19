@@ -68,27 +68,43 @@ int main(int argc, char *argv[])
 				|| (line[i] == '_'))
 			{
 				size_t name_begin = i;
-				for (++i; i < line.size(); ++i)
+				for (++i; i < line.size();++i)
 				{
 					if (!(((line[i] >= 'a') && (line[i] <= 'z'))
 						|| ((line[i] >= 'A') && (line[i] <= 'Z'))
 						|| ((line[i] >= '0') && (line[i] <= '9'))
 						|| (line[i] == '_') || (line[i] == '$')))
-					{
+					{    
+					       	
 						break; // [name_begin, i) is the range for the token
 					}
 				}
 				output_file << "NAME "
 					<< line.substr(name_begin, i-name_begin) << std::endl;
 			}
+		//NUMBER
+			//std::int line
+	else if ((line[i] >= '0') && (line[i] <= '9'))
+			{ 
+				size_t num_begin =i;
+				for (++i;i<line.size();++i)
+				{
+						if(!(line[i]>='0') && (line[i]<='9'))
+						{
+							break;
+							}
+					}
+				output_file << 
+"NUMBER " << line.substr(num_begin, i-num_begin) << std::endl;
+				} 
+					
 		    else
 			{
 				std::cerr << "LINE " << line_no
 					<< ": invalid character" << std::endl;
 				return -1;
 			}
-		}
-	}
-
-    return 0;
+			}
+}
+return 0;
 }
