@@ -9,5 +9,5 @@ module top;
 
    not(s1, s0);
    
- and 111 ;
+
 endmodule
