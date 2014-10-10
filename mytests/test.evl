@@ -10,4 +10,4 @@ module top;
    not(s1, s0);
    
 
-endmodule
+endmodule 
