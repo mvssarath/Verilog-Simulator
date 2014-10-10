@@ -1,7 +1,43 @@
-module  mux_using_assign( din_0,din_1, sel, mux_out );
-  input din_0, din_1, sel ;
-  output mux_out;
-  wire  mux_out;
- assign mux_out = (sel) din_1 : din_0;
- 
-endmodule;
+module test;
+
+  // driver
+  wire clk;
+  wire [9:0] a, b;
+
+  evl_clock(clk);
+  lfsr10 r_a(a, clk);
+  lfsr10 r_b(b, clk);
+
+  // dut
+  wire [10:0] s;
+  wire zz;
+  evl_zero(zz);
+  adder10 dut(s[9:0], s[10], a, b, zz);
+
+  // golden
+  wire [10:0] s_g;
+  evl_zero(s_g[0]);
+  lfsr10 r_g(s_g[10:1], clk);
+
+  // test
+  wire [10:0] eq;
+  xnor(eq[0], s[0], s_g[0]);
+  xnor(eq[1], s[1], s_g[1]);
+  xnor(eq[2], s[2], s_g[2]);
+  xnor(eq[3], s[3], s_g[3]);
+  xnor(eq[4], s[4], s_g[4]);
+  xnor(eq[5], s[5], s_g[5]);
+  xnor(eq[6], s[6], s_g[6]);
+  xnor(eq[7], s[7], s_g[7]);
+  xnor(eq[8], s[8], s_g[8]);
+  xnor(eq[9], s[9], s_g[9]);
+  xnor(eq[10], s[10], s_g[10]);
+
+  wire all_eq;
+  and(all_eq, eq[0], eq[1], eq[2], eq[3], eq[4],
+    eq[5], eq[6], eq[7], eq[8], eq[9], eq[10]);
+
+  // output
+  evl_output test_out(a, b, s, s_g, all_eq);
+
+endmodule

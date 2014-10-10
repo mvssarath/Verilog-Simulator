@@ -1,8 +1,11 @@
-module get_SHA1(sha,out);
 
-input SHA1;
-output out;
+module mux_2to1;
+  wire nsel, in0_sel, in1_sel;
 
-sha is h5A827999,h5524322s,abcde01234;
-end;
+  not(nsel, sel);
+  and(in0_sel, in0, nsel);
+  and(in1_sel, in1, sel);
+  or(out, in0_sel, in1_sel);
+
+endmodule
 

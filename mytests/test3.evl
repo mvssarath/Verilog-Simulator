@@ -1,6 +1,15 @@
-module lextest3;
 
-w$ire (a,b,c);
+module full_adder;
 
-end module;;;;;
+  wire ab, bc, ca;
+
+  xor(s, a, b, ci);
+
+  and(ab, a, b);
+  and(bc, b, ci);
+  and(ca, ci, a);
+
+  or(co, ab, bc, ca);
+
+endmodule
 
