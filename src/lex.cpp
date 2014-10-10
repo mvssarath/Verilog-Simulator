@@ -763,8 +763,12 @@ void display_components(std::ostream &out,const evl_components &comps )
 			{
 			out<<"    pin"<<" "<<iter->name<< std::endl;
 			}
+			else if (iter->bus_msb != -1 && iter->bus_lsb == -1)
+			{
+out<<"    pin"<<" "<<iter->name<<*" "<<iter->bus_msb <</*" "<<iter->bus_lsb<<*/ std::endl;
+			}
 			else
-			out<<"    pin"<<" "<<iter->name<<*" "<<iter->bus_msb <</*" "<<iter->bus_lsb<<*/ std::endl;
+out<<"    pin"<<" "<<iter->name<<*" "<<iter->bus_msb <<" "<<iter->bus_lsb<< std::endl;
 		}
 	}
 }
