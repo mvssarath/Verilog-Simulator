@@ -1,0 +1,18 @@
+module top 
+wires 3
+  wire a 1
+  wire b 1
+  wire c 1
+components 4
+  component evl_zero 1
+    pin a
+  component evl_one 1
+    pin b
+  component and 3
+    pin c
+    pin a
+    pin b
+  component evl_output sim_out 3
+    pin c
+    pin a
+    pin b

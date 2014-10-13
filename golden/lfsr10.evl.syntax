@@ -1,0 +1,68 @@
+module lfsr 
+wires 4
+  wire s 10
+  wire nx 1
+  wire x 1
+  wire clk 1
+components 14
+  component evl_output sim_out 11
+    pin s
+    pin s 9
+    pin s 8
+    pin s 7
+    pin s 6
+    pin s 5
+    pin s 4
+    pin s 3
+    pin s 2
+    pin s 1
+    pin s 0
+  component evl_clock 1
+    pin clk
+  component evl_dff 3
+    pin s 0
+    pin x
+    pin clk
+  component evl_dff 3
+    pin s 1
+    pin s 0
+    pin clk
+  component evl_dff 3
+    pin s 2
+    pin s 1
+    pin clk
+  component evl_dff 3
+    pin s 3
+    pin s 2
+    pin clk
+  component evl_dff 3
+    pin s 4
+    pin s 3
+    pin clk
+  component evl_dff 3
+    pin s 5
+    pin s 4
+    pin clk
+  component evl_dff 3
+    pin s 6
+    pin s 5
+    pin clk
+  component evl_dff 3
+    pin s 7
+    pin s 6
+    pin clk
+  component evl_dff 3
+    pin s 8
+    pin s 7
+    pin clk
+  component evl_dff 3
+    pin s 9
+    pin s 8
+    pin clk
+  component xor 3
+    pin nx
+    pin s 9
+    pin s 6
+  component not 2
+    pin x
+    pin nx
