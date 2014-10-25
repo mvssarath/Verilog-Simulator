@@ -1,13 +1,8 @@
 // a comment
 module top;
 
-   wire s0, s1, clk;
+	wire in1,in2,out;
 
-   evl_clock(clk);
-
-   evl_dff(s0, s1, clk);
-
-   not(s1, s0);
-   
-
-endmodule 
+	and name(out,in1,in2);
+	
+endmodule

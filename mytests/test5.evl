@@ -1,11 +1,13 @@
 
-module mux_2to1;
-  wire nsel, in0_sel, in1_sel;
+module top;
 
-  not(nsel, sel);
-  and(in0_sel, in0, nsel);
-  and(in1_sel, in1, sel);
-  or(out, in0_sel, in1_sel);
+  wire ab, bc, ca;
+
+ 
+
+  or and1(ca, ab, bc);
+  
+
+ 
 
 endmodule
-
