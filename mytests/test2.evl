@@ -1,0 +1,7 @@
+module top; 
+wire in1,in2,out; 
+evl_output sim_out(in1,in2,out); 
+evl_dff(out,in1,in2); 
+not(in1,in2);
+not(in2,out); 
+endmodule

@@ -1,0 +1,13 @@
+module top;
+
+	wire a,b,f,g;
+	
+	evl_output sim_out(a,b,f,g);
+	
+	evl_one(b);
+	evl_zero(a);
+	
+	xor (f,a,b);
+	not (g,f);
+
+endmodule
