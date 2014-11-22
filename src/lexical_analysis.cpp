@@ -1,125 +1,142 @@
 #include "lexical_analysis.h"
-
-bool extract_tokens_from_line(std::string line,int LineNo, evl_tokens &tokens)
+bool issingle(char ch)
 {
-	for (size_t i = 0; i < line.size();)
+	return (ch == '(') || (ch == ')') || (ch == '[')
+		|| (ch == ']') || (ch == ':') || (ch == ';')
+		|| (ch == ',');
+}
+bool isname(char ch)
+{
+	return isalpha(ch) || (ch == '_') || (ch == '\\') || (ch == '.');
+}
+bool extract_tokens_from_line(std::string line, int line_no, evl_tokens &tokens) 
+{
+	for (size_t i = 0; i < line.size();) 
 	{
+	
 		if (line[i] == '/')
 		{
 			++i;
 			if ((i == line.size()) || (line[i] != '/'))
 			{
-				std::cerr << "LINE " << LineNo	<< ": a single / is not allowed" << std::endl;
+				std::cerr << "LINE " << line_no << ": a single / is not allowed" << std::endl;
 				return false;
 			}
-
 			break;
 		}
+
 		else if (isspace(line[i]))
 		{
-		++i;
-		}
-		else if ((line[i] == '(') || (line[i] == ')')
-			|| (line[i] == '[') || (line[i] == ']')
-			|| (line[i] == ':') || (line[i] == ';')
-			|| (line[i] == ','))
-		{
-
-			evl_token token;
-			token.LineNo=LineNo;
-			token.type=evl_token::SINGLE;
-			token.str=std::string(1, line[i]);
-			tokens.push_back(token);
 			++i;
+			continue; 
 		}
-		else if (isalpha(line[i]) || (line[i] == '_')
-			|| (line[i] == '\\') || (line[i] == '.'))
+		else if (issingle(line[i]))
+		{
+			evl_token token;
+			token.line_no = line_no;
+			token.type = evl_token::SINGLE;
+			token.str = std::string(1, line[i]);
+			tokens.push_back(token);
+			++i;										
+			continue;									
+		}
+		else if (isname(line[i])) 
 		{
 			size_t name_begin = i;
 			for (++i; i < line.size(); ++i)
 			{
-				if (!(isalpha(line[i]) || isdigit(line[i])|| (line[i] == '_')	|| (line[i] == '\\') || (line[i] == '.')))
-
+				if (!(isname(line[i]) || isdigit(line[i]))) 
 				{
-
 					break;
-
 				}
-
 			}
 			evl_token token;
-			token.LineNo=LineNo;
-			token.type=evl_token::NAME;
-			token.str=line.substr(name_begin, i-name_begin);
+			token.line_no = line_no;
+			token.type = evl_token::NAME;
+			token.str = std::string(line.substr(name_begin, i - name_begin));
 			tokens.push_back(token);
-
 		}
 		else if (isdigit(line[i]))
 		{
-			size_t number_begin=i;
-			for (++i; i<line.size();++i)
+			size_t number_begin = i;
+			for (++i; i < line.size(); ++i)
 			{
-				if(!isdigit(line[i]))
+				if (isname(line[i]))
 				{
-					break; 	// [number_begin, i) is
+					std::cerr << "LINE " << line_no << ": invalid character" << std::endl;
+					return false;
+				}
+				else if (issingle(line[i]) || !((line[i]) || isname(line[i])))
+				{
+					break;
 				}
 			}
 			evl_token token;
-			token.LineNo=LineNo;
-			token.type=evl_token::NUMBER;
-			token.str=line.substr(number_begin,i-number_begin);
+			token.line_no = line_no;
+			token.type = evl_token::NUMBER;
+			token.str = std::string(line.substr(number_begin, i - number_begin));
 			tokens.push_back(token);
 		}
 		else
 		{
-			std::cerr << "LINE " << LineNo	<< ": invalid character" << std::endl;
+			std::cerr << "LINE " << line_no << ": invalid character" << std::endl;
 			return false;
 		}
 	}
-	return true; 
+	return true;
 }
-
-bool extract_tokens_from_file(std::string file_name, evl_tokens &tokens)
-{
+bool extract_tokens_from_file(std::string file_name, evl_tokens &tokens) 
+{ 
 	std::ifstream input_file(file_name.c_str());
 	if (!input_file)
 	{
 		std::cerr << "I can't read " << file_name << "." << std::endl;
 		return false;
 	}
-
 	tokens.clear();
-
 	std::string line;
-	for (int LineNo = 1; std::getline(input_file, line); ++LineNo)
+	for (int line_no = 1; std::getline(input_file, line); ++line_no)
 	{
-		if (!extract_tokens_from_line(line, LineNo, tokens))
+		if (!extract_tokens_from_line(line, line_no, tokens)) 
 		{
 			return false;
 		}
 	}
 	return true;
 }
-
-bool store_tokens_to_file(std::string file_name, const evl_tokens &tokens)
-
-
+void display_tokens(std::ostream &out, const evl_tokens &tokens) 
 {
-		std::ofstream output_file(file_name.c_str());
-		if (!output_file)
+	for (evl_tokens::const_iterator iter = tokens.begin(); iter != tokens.end(); ++iter)
+	{
+		if (iter->type == evl_token::SINGLE)
 		{
-			std::cerr << "I can't write into file " <<file_name << "."<< std::endl;
-			return false;
+			out << "SINGLE " << iter->str << std::endl;
 		}
+		else if (iter->type == evl_token::NAME)
+		{
+			out << "NAME " << iter->str << std::endl;
+		}
+		else if (iter->type == evl_token::NUMBER)
+		{
+			out << "NUMBER " << iter->str << std::endl;
+		}
+		else {
+			out << "LINE " << iter->line_no << ": invalid character" << std::endl;
 
-		return true;
+		}
+	}
+
+
 }
-
-bool token_is_semicolon(const evl_token &token)
-
+bool store_tokens_to_file(std::string file_name, const evl_tokens &tokens) 
 {
-	if(token.str == ";")
-		return true;
-	else
+	std::ofstream output_file(file_name.c_str());
+	if (!output_file)
+	{
+		std::cerr << "I can't write" << output_file << "." << std::endl;
 		return false;
+	}
+	display_tokens(output_file, tokens);
+	return true;
 }
+

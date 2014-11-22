@@ -1,13 +1,13 @@
-
 module top;
 
-  wire ab, bc, ca;
-
- 
-
-  or and1(ca, ab, bc);
-  
-
- 
+	wire i1,i2,n_i,out;
+	
+	evl_output sim_out(i1,i2,n_i,out);
+	
+	evl_one(i2);
+	evl_zero(i1);
+	
+	xor (n_i,i1,i2);
+	not (out,n_i);
 
 endmodule

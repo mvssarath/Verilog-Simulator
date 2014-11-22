@@ -1,14 +1,13 @@
 module top;
 
-  wire aa;
-	wire bb;
-	wire cc;
-
- 
-
-  and ten(cc, aa, bb);
-  
-
- 
+	wire aa,bb,ff,gg;
+	
+	evl_output sim_out(aa,bb,ff,gg);
+	
+	evl_one(bb);
+	evl_zero(aa);
+	
+	xor (ff,aa,bb);
+	not (gg,ff);
 
 endmodule

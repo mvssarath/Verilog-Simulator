@@ -1,7 +1,0 @@
-module top;
-
-	wire a11,a12,a13;
-
-	and name(a13,a11,a12);
-	
-endmodule

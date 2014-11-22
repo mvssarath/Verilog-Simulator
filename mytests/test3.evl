@@ -1,14 +1,13 @@
-
 module top;
 
-  wire ab, bc, ca;
-
- 
-
-  and two(ca, ab, bc);
-  
-
- 
+	wire a,b,f;
+	
+	evl_output sim_out(a,b,f);
+	
+	evl_one(b);
+	evl_zero(a);
+	
+	xor (f,a,b);
+	
 
 endmodule
-

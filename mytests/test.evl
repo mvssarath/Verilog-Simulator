@@ -1,8 +1,0 @@
-// a comment
-module top;
-
-	wire in1,in2,out;
-
-	and name(out,in1,in2);
-	
-endmodule
