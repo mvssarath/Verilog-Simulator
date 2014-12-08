@@ -1,0 +1,9 @@
+module counter
+wire in 16
+wire set 1
+component evl_input sim_in 2
+pin set -1 -1
+pin in 15 0
+component evl_output sim_out 2
+pin set -1 -1
+pin in 15 0

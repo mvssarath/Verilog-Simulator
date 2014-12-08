@@ -95,10 +95,13 @@ bool gate::compute()
 void netlist::simulate(int cycles)
 {
 	std::ofstream output_file;
+	std::string lut_file_name = "";
 	std::string out_file_name = "";
 	std::string in_file_name = "";
 	std::vector<int> number_of_trans;
 	std::vector<int> set;
+	std::vector<std::string> lut_vec;
+	std::vector<std::string> lut_bin_vec;
 	std::vector<std::string> in;
 	std::vector<std::string> in_bin_vec;
 
@@ -109,8 +112,113 @@ void netlist::simulate(int cycles)
 			out_file_name = file_name + "." + (*gate_find)->get_name() + "." + (*gate_find)->get_type();
 			output_file.open(out_file_name.c_str());
 		}
+		if ((*gate_find)->get_type() == "evl_input")
+		{
+			in_file_name = netlist::file_name + "." + (*gate_find)->get_name() + "." + (*gate_find)->get_type();
+			std::ifstream input_file((char *)in_file_name.c_str());
+			std::string line;
+
+			for (; getline(input_file, line);){
+				std::istringstream ss(line);
+
+				int var1, var2;
+				std::string var3;
+
+				ss >> var1 >> var2 >> var3;
+
+				number_of_trans.push_back(var1);
+				set.push_back(var2);
+				in.push_back(var3);
+
+			}
+			std::string in_bin;
+
+			for (int i = 1; i != in.size(); ++i)
+			{
+				if (in[i] == "0") 
+				{
+					in_bin = "0000000000000000";
+				}
+				else {
+					for (int j = 0; j != 4; ++j) 
+					{
+						switch (in[i].at(j))
+						{
+						case '0': in_bin.append("0000"); break;
+						case '1': in_bin.append("0001"); break;
+						case '2': in_bin.append("0010"); break;
+						case '3': in_bin.append("0011"); break;
+						case '4': in_bin.append("0100"); break;
+						case '5': in_bin.append("0101"); break;
+						case '6': in_bin.append("0110"); break;
+						case '7': in_bin.append("0111"); break;
+						case '8': in_bin.append("1000"); break;
+						case '9': in_bin.append("1001"); break;
+						case 'a': in_bin.append("1010"); break;
+						case 'b': in_bin.append("1011"); break;
+						case 'c': in_bin.append("1100"); break;
+						case 'd': in_bin.append("1101"); break;
+						case 'e': in_bin.append("1110"); break;
+						case 'f': in_bin.append("1111"); break;
+						}
+					}
+				}
+				in_bin_vec.push_back(in_bin);
+				in_bin = "";
+			}
+
+		}
+		if ((*gate_find)->get_type() == "evl_lut") {
+			lut_file_name = netlist::file_name + "." + (*gate_find)->get_name()+ "." + (*gate_find)->get_type();
+			std::ifstream lut_file((char *)lut_file_name.c_str());
+			std::string line;
+
+			for (int line_no = 0; getline(lut_file, line); line_no++){
+				std::string word, addr;
+				std::istringstream ss(line);
+				if (line_no != 0) {
+					ss >> word;
+
+					lut_vec.push_back(word);
+				}
+			}
+			std::string lut_bin;
+
+			for (int i = 0; i != lut_vec.size(); ++i) {
+				for (int j = 0; j != 4; ++j) {
+					switch (lut_vec[i].at(j)) {
+					case '0': lut_bin.append("0000"); break;
+					case '1': lut_bin.append("0001"); break;
+					case '2': lut_bin.append("0010"); break;
+					case '3': lut_bin.append("0011"); break;
+					case '4': lut_bin.append("0100"); break;
+					case '5': lut_bin.append("0101"); break;
+					case '6': lut_bin.append("0110"); break;
+					case '7': lut_bin.append("0111"); break;
+					case '8': lut_bin.append("1000"); break;
+					case '9': lut_bin.append("1001"); break;
+					case 'a': lut_bin.append("1010"); break;
+					case 'b': lut_bin.append("1011"); break;
+					case 'c': lut_bin.append("1100"); break;
+					case 'd': lut_bin.append("1101"); break;
+					case 'e': lut_bin.append("1110"); break;
+					case 'f': lut_bin.append("1111"); break;
+					}
+				}
+				lut_bin_vec.push_back(lut_bin);
+				lut_bin = "";
+			}
+		}
 	
 	}
+	for (size_t i = 0; i<lut_vec.size(); ++i) {
+		std::cout << "Addr: " << std::hex << i << " Word: " << lut_vec[i] << std::endl;
+	}
+
+	for (size_t i = 0; i<lut_vec.size(); ++i) {
+		std::cout << "Addr: " << std::hex << i << " Word: " << lut_bin_vec[i] << std::endl;
+	}
+
 
 	display_sim_out(output_file);
 
@@ -242,9 +350,87 @@ void netlist::simulate(int cycles)
 	{
 		for (int i = 0; i != cycles; ++i)
 		{
+			std::string addr;
+			for (std::map<std::string, net *>::iterator net_it = nets_.begin(); net_it != nets_.end(); ++net_it)
+			{
+				if (net_it->first == "a[4]"){
+					int temp = net_it->second->retrieve_logic_value();
+					std::stringstream ss;
+					ss << temp;
+					addr.append(ss.str());
+				}
+				if (net_it->first == "a[5]"){
+					int temp = net_it->second->retrieve_logic_value();
+					std::stringstream ss;
+					ss << temp;
+					addr.append(ss.str());
+				}
+				if (net_it->first == "a[6]"){
+					int temp = net_it->second->retrieve_logic_value();
+					std::stringstream ss;
+					ss << temp;
+					addr.append(ss.str());
+				}
+				if (net_it->first == "a[7]") {
+					int temp = net_it->second->retrieve_logic_value();
+					std::stringstream ss;
+					ss << temp;
+					addr.append(ss.str());
+				}
+			}
+			int x = 0;
+			if (addr == "0000") { x = 0; }
+			else if (addr == "0001") { x = 1; }
+			else if (addr == "0010") { x = 2; }
+			else if (addr == "0011") { x = 3; }
+			else if (addr == "0100") { x = 4; }
+			else if (addr == "0101") { x = 5; }
+			else if (addr == "0110") { x = 6; }
+			else if (addr == "0111") { x = 7; }
+			else if (addr == "1000") { x = 8; }
+			else if (addr == "1001") { x = 9; }
+			else if (addr == "1010") { x = 10; }
+			else if (addr == "1011") { x = 11; }
+			else if (addr == "1100") { x = 12; }
+			else if (addr == "1101") { x = 13; }
+			else if (addr == "1110") { x = 14; }
+			else if (addr == "1111") { x = 15; }
+
 			for (std::map<std::string, net *>::iterator net_it = nets_.begin(); net_it != nets_.end(); ++net_it) 
 			{
 				net_it->second->logic_value = -1;
+				if (net_it->first == "word[0]")
+					net_it->second->logic_value = return_int_value(lut_bin_vec[x].at(15));
+				else if (net_it->first == "word[1]")
+					net_it->second->logic_value = return_int_value(lut_bin_vec[x].at(14));
+				else if (net_it->first == "word[2]")
+					net_it->second->logic_value = return_int_value(lut_bin_vec[x].at(13));
+				else if (net_it->first == "word[3]")
+					net_it->second->logic_value = return_int_value(lut_bin_vec[x].at(12));
+				else if (net_it->first == "word[4]")
+					net_it->second->logic_value = return_int_value(lut_bin_vec[x].at(11));
+				else if (net_it->first == "word[5]")
+					net_it->second->logic_value = return_int_value(lut_bin_vec[x].at(10));
+				else if (net_it->first == "word[6]")
+					net_it->second->logic_value = return_int_value(lut_bin_vec[x].at(9));
+				else if (net_it->first == "word[7]")
+					net_it->second->logic_value = return_int_value(lut_bin_vec[x].at(8));
+				else if (net_it->first == "word[8]")
+					net_it->second->logic_value = return_int_value(lut_bin_vec[x].at(7));
+				else if (net_it->first == "word[9]")
+					net_it->second->logic_value = return_int_value(lut_bin_vec[x].at(6));
+				else if (net_it->first == "word[10]")
+					net_it->second->logic_value = return_int_value(lut_bin_vec[x].at(5));
+				else if (net_it->first == "word[11]")
+					net_it->second->logic_value = return_int_value(lut_bin_vec[x].at(4));
+				else if (net_it->first == "word[12]")
+					net_it->second->logic_value = return_int_value(lut_bin_vec[x].at(3));
+				else if (net_it->first == "word[13]")
+					net_it->second->logic_value = return_int_value(lut_bin_vec[x].at(2));
+				else if (net_it->first == "word[14]")
+					net_it->second->logic_value = return_int_value(lut_bin_vec[x].at(1));
+				else if (net_it->first == "word[15]")
+					net_it->second->logic_value = return_int_value(lut_bin_vec[x].at(0));
 			}
 			for (std::map<std::string, net *>::iterator net_it = nets_.begin(); net_it != nets_.end(); ++net_it) 
 			{
@@ -433,3 +619,22 @@ bool evl_clock::compute_gate()
 	return true;
 }
 void evl_clock::compute_next_state(){}
+
+bool evl_lut::compute_gate()
+{
+
+	return true;
+}
+void evl_lut::compute_next_state(){}
+
+
+bool tris::compute_gate()
+{
+	return true;
+}
+
+void tris::compute_next_state() {}
+
+
+
+

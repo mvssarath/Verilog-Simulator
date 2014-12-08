@@ -1,6 +1,8 @@
 #ifndef GUARD_NETLIST_H
 #define GUARD_NETLIST_H
 #include "syntactical_analysis.h"
+////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////// NETLIST CLASS FILES  /////////////////////////////////////////
 class netlist;
 class gate;
 class net;
@@ -242,8 +244,32 @@ public:
 	evl_clock(std::string name)
 		: gate("evl_clock", name), state_(false), next_state_(false) {}
 };
+class evl_lut :public gate
+{
 
+	bool state_, next_state_;
+	bool validate_structural_semantics();
 
+public:
+	void compute_next_state();
+	bool compute_gate();
+	evl_lut(std::string name)
+		: gate("evl_lut", name), state_(false), next_state_(false) {}
+};
+class tris :public gate
+{
+
+	bool state_, next_state_;
+	bool validate_structural_semantics();
+
+public:
+	void compute_next_state();
+	bool compute_gate();
+	tris(std::string name)
+		: gate("tris", name), state_(false), next_state_(false) {}
+};
+////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////// CODE ENDS HERE  //////////////////////////////////////////////
 #endif
 
 

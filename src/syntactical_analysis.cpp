@@ -111,7 +111,7 @@ bool store_statements_to_file(std::string file_name, const evl_statements &state
 	std::ofstream output_file(file_name.c_str());
 	if (!output_file)
 	{
-		std::cerr << "I can't write" << output_file << "." << std::endl;
+		//std::cerr << "I can't write"  output_file << "." << std::endl;
 		return false;
 	}
 	display_statements(output_file, statements);
@@ -540,7 +540,7 @@ bool process_component_statements(evl_components &components, evl_statement &s, 
 				}
 				if (bus_msb < 0) 
 				{
-					std::cerr << "Bus MSB of value: " << bus_msb << " must be greater than 0." << std::cout;
+//					std::cerr << "Bus MSB of value: " << bus_msb << " must be greater than 0." << std::cout;
 				}
 				bus_lsb = bus_msb;
 				state = BUS_DONE;
@@ -652,11 +652,13 @@ void display_module(std::ostream &out, const evl_modules &modules)
 {
 	for (evl_modules::const_iterator it1 = modules.begin(); it1 != modules.end(); ++it1) 
 	{
-		out << "module " << it1->name << " " << it1->c_wires.size() << " " << it1->c_components.size() << std::endl;
-		for (evl_wires::const_iterator it2 = it1->c_wires.begin(); it2 != it1->c_wires.end(); ++it2) 
+		//out << "module " << it1->name << " " << it1->c_wires.size() << " " << it1->c_components.size() << std::endl;
+	out <<"module "<<it1->name << std::endl;
+	for (evl_wires::const_iterator it2 = it1->c_wires.begin(); it2 != it1->c_wires.end(); ++it2) 
 		{
 			out << "wire " << it2->first << " " << it2->second << std::endl;
-		}
+	//out<< "wire" << it2->first << std::endl;
+	}
 		for (evl_components::const_iterator it3 = it1->c_components.begin(); it3 != it1->c_components.end(); ++it3) 
 		{
 			out << "component " << it3->type << " " << it3->name << " " << it3->comp_pins.size() << std::endl;
@@ -674,7 +676,7 @@ bool store_module_to_file(std::string file_name, evl_modules &modules)
 	std::ofstream output_file(file_name.c_str());
 	if (!output_file)
 	{
-		std::cerr << "I can't write" << output_file << "." << std::endl;
+//		std::cerr << "I can't write" << output_file << "." << std::endl;
 		return false;
 	}
 	display_module(output_file, modules);

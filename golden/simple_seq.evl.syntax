@@ -1,0 +1,16 @@
+module top
+wire D 1
+wire Q 1
+wire clk 1
+component evl_clock NONE 1
+pin clk -1 -1
+component evl_dff NONE 3
+pin Q -1 -1
+pin D -1 -1
+pin clk -1 -1
+component not NONE 2
+pin D -1 -1
+pin Q -1 -1
+component evl_output sim_out 2
+pin D -1 -1
+pin Q -1 -1

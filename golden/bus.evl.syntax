@@ -1,4 +1,4 @@
-module top 2 4
+module top
 wire in 2
 wire out 1
 component evl_zero NONE 1

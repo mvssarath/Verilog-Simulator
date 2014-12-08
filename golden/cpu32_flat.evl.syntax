@@ -1,4 +1,4 @@
-module top 25206 26136
+module top
 wire io_80 16
 wire io_81 8
 wire io_82 8

@@ -1,5 +1,7 @@
 #ifndef GAURD_LEXICAL_ANALYSIS_H
 #define GAURD_LEXICAL_ANALYSIS_H
+////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////// CLASS FILES FOR LEXICAL  ANALYSIS /////////////////////////
 #include <assert.h>
 #include <algorithm>
 #include <ctype.h>
@@ -31,4 +33,6 @@ bool extract_tokens_from_line(std::string line, int line_no, evl_tokens &tokens)
 bool extract_tokens_from_file(std::string file_name, evl_tokens &tokens);
 void display_tokens(std::ostream &out, const evl_tokens &tokens);
 bool store_tokens_to_file(std::string file_name, const evl_tokens &tokens);
+////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////// CODE ENDS HERE           /////////////////////////////////////
 #endif

@@ -235,6 +235,14 @@ bool netlist::create_gate(const evl_component &c)
 	{
 		gates_.push_back(new evl_clock(c.name));
 	}
+	else if (c.type == "evl_lut")
+	{
+		gates_.push_back(new evl_lut(c.name));
+	}
+	else if (c.type == "tris")
+	{
+		gates_.push_back(new tris(c.name));
+	}
 	else
 	{
 		std::cerr << c.name << " " << c.type << " Gate does not exist" << std::endl;
@@ -248,7 +256,7 @@ void netlist::save(std::string file_name)
 	std::ofstream output_file(file_name.c_str());
 	if (!output_file)
 	{
-		std::cerr << "I can't write" << output_file << "." << std::endl;
+//		std::cerr << "I can't write" << output_file << "." << std::endl;
 	}
 	display_netlist(output_file);
 }
@@ -317,9 +325,10 @@ bool buffer::validate_structural_semantics()
 }
 bool flip_flop::validate_structural_semantics() 
 {
-	if (pins_.size() != 2) return false;
+	if (pins_.size() != 3) return false;
 	pins_[0]->set_as_output();
 	pins_[1]->set_as_input();
+	pins_[2]->set_as_input();
 	return true;
 }
 bool evl_one::validate_structural_semantics() 
@@ -346,7 +355,7 @@ bool evl_input::validate_structural_semantics()
 {
 	if (pins_.size() < 1)
 		return false;
-	for (size_t i = 0; i < pins_.size(); ++i) 
+	for (size_t i = 0; i < pins_.size(); ++i)    
 	{
 		pins_[i]->set_as_output();
 	}
@@ -364,13 +373,26 @@ bool evl_output::validate_structural_semantics()
 }
 bool evl_clock::validate_structural_semantics() 
 {
-	if (pins_.size() > 1)
+	if (pins_.size() != 1)
 		return false;
-	for (size_t i = 0; i < pins_.size(); ++i) 
-	{
-		pins_[i]->set_as_output();
-	}
+	pins_[0]->set_as_input();
 	return true;
 }
+bool evl_lut::validate_structural_semantics()
+{
+	if (pins_.size() != 2) return false;
+	pins_[0]->set_as_output();
+	pins_[1]->set_as_input();
+	return true;
+}
+bool tris::validate_structural_semantics()
+{
+	if (pins_.size() != 3) return false;
+	pins_[0]->set_as_output();
+	pins_[1]->set_as_input();
+	pins_[2]->set_as_input();
+		return true;
+}
+
 
 
