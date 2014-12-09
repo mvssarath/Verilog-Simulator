@@ -111,7 +111,7 @@ bool store_statements_to_file(std::string file_name, const evl_statements &state
 	std::ofstream output_file(file_name.c_str());
 	if (!output_file)
 	{
-		//std::cerr << "I can't write"  output_file << "." << std::endl;
+		
 		return false;
 	}
 	display_statements(output_file, statements);
