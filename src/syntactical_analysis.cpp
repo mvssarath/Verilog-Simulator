@@ -302,7 +302,7 @@ bool process_wire_statements(evl_wires &wires, evl_statement &s)
 				bus_width = atoi(t.str.c_str()) + 1;
 				if (bus_width < 2) 
 				{
-					std::cerr << "Bus width entered is " << bus_width << " but needs a bus width of at least 2. Line No: " << t.line_no << std::endl;
+					std::cerr << "bus width  is " << bus_width << " but needs a bus width at Line No: " << t.line_no << std::endl;
 					return false;
 				}
 			}
@@ -317,7 +317,7 @@ bool process_wire_statements(evl_wires &wires, evl_statement &s)
 		{
 			if (t.str != ":") 
 			{
-				std::cerr << "Need a ':' buf found '" << t.str << "' on line " << t.line_no << std::endl;
+				std::cerr << "Need a ':' but found '" << t.str << "' on line " << t.line_no << std::endl;
 				return false;
 			}
 			state = BUS_COLON;
@@ -329,7 +329,7 @@ bool process_wire_statements(evl_wires &wires, evl_statement &s)
 			{
 				if (t.str != "0")
 				{
-					std::cerr << "Need a '0' buf found '" << t.str << "' on line " << t.line_no << std::endl;
+					std::cerr << "Need a '0' but found '" << t.str << "' on line " << t.line_no << std::endl;
 					return false;
 				}
 				state = BUS_LSB;
@@ -341,7 +341,7 @@ bool process_wire_statements(evl_wires &wires, evl_statement &s)
 			{
 				if (t.str != "]") 
 				{
-					std::cerr << "Need a ']' buf found '" << t.str << "' on line" << t.line_no << std::endl;
+					std::cerr << "Need a ']' but found '" << t.str << "' on line" << t.line_no << std::endl;
 					return false;
 				}
 				state = BUS_DONE;
@@ -378,7 +378,7 @@ bool process_wire_statements(evl_wires &wires, evl_statement &s)
 	}
 	if (!s.tokens.empty() || (state != DONE)) 
 	{
-		std::cerr << "something wrong with the statement in wires" << std::endl;
+		std::cerr << "please check the statements in wires" << std::endl;
 		return false;
 	}
 
@@ -427,7 +427,7 @@ bool process_component_statements(evl_components &components, evl_statement &s, 
 			}
 			else 
 			{
-				std::cerr << "Need a NAME or a '(' but found '" << t.str << "' at line " << t.line_no << std::endl;
+				std::cerr << "Need a 'NAME' or a '(' but found '" << t.str << "' at line " << t.line_no << std::endl;
 				return false;
 			}
 			evl_component component;
@@ -456,7 +456,7 @@ bool process_component_statements(evl_components &components, evl_statement &s, 
 				evl_wires::const_iterator it = wires.find(t.str);
 				if (it == wires.end()) 
 				{
-					std::cerr << "Wire '" << t.str << "' on line " << t.line_no << " is not defined" << std::endl;
+					std::cerr << "Wire" << t.str << " on line " << t.line_no << " is not defined.....please check the code" << std::endl;
 					return false;
 				}
 				pin_name = t.str;
@@ -535,12 +535,12 @@ bool process_component_statements(evl_components &components, evl_statement &s, 
 
 				if (bus_msb > found_wire_msb)
 				{
-					std::cerr << "Bus MSB of value: " << bus_msb << " must be greater than or equal to the wire bus msb of value: " << found_wire_msb << std::endl;
+					std::cerr << "Bus MSB of value: " << bus_msb << " please check the bus width " << found_wire_msb << std::endl;
 					return false;
 				}
 				if (bus_msb < 0) 
 				{
-//					std::cerr << "Bus MSB of value: " << bus_msb << " must be greater than 0." << std::cout;
+					return false;
 				}
 				bus_lsb = bus_msb;
 				state = BUS_DONE;
@@ -576,7 +576,7 @@ bool process_component_statements(evl_components &components, evl_statement &s, 
 			}
 			if (bus_msb > found_wire_msb) 
 			{
-				std::cerr << "Bus msb is: " << bus_msb << ". Needs to less than or equal to  wire bus msb: " << found_wire_msb << std::endl;
+				std::cerr << "Bus msb is: " << bus_msb << "plese check the width on the bus " << found_wire_msb << std::endl;
 				return false;
 			}
 			if (bus_lsb < 0)
@@ -641,7 +641,7 @@ bool process_component_statements(evl_components &components, evl_statement &s, 
 	}
 	if (!s.tokens.empty() || (state != DONE)) 
 	{
-		std::cerr << "something wrong with the statement in Comp" << std::endl;
+		std::cerr << "please check the component section of the code" << std::endl;
 		return false;
 	}
 
@@ -652,12 +652,10 @@ void display_module(std::ostream &out, const evl_modules &modules)
 {
 	for (evl_modules::const_iterator it1 = modules.begin(); it1 != modules.end(); ++it1) 
 	{
-		//out << "module " << it1->name << " " << it1->c_wires.size() << " " << it1->c_components.size() << std::endl;
-	out <<"module "<<it1->name << std::endl;
+		out <<"module "<<it1->name << std::endl;
 	for (evl_wires::const_iterator it2 = it1->c_wires.begin(); it2 != it1->c_wires.end(); ++it2) 
 		{
 			out << "wire " << it2->first << " " << it2->second << std::endl;
-	//out<< "wire" << it2->first << std::endl;
 	}
 		for (evl_components::const_iterator it3 = it1->c_components.begin(); it3 != it1->c_components.end(); ++it3) 
 		{
@@ -676,7 +674,6 @@ bool store_module_to_file(std::string file_name, evl_modules &modules)
 	std::ofstream output_file(file_name.c_str());
 	if (!output_file)
 	{
-//		std::cerr << "I can't write" << output_file << "." << std::endl;
 		return false;
 	}
 	display_module(output_file, modules);
@@ -718,5 +715,6 @@ bool parse_evl_file(std::string file_name, evl_modules &modules)
 	}
 	return true;
 }
-
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////    CODE ENDS HERE    ////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
